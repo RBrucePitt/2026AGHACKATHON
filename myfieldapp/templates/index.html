@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Field Boundary Creator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <style>
+        #map { height: 600px; width: 100%; }
+        .controls { padding: 10px; background: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h3>Draw Field Boundary</h3>
+        <button id="exportBtn">Export to .SHP (USDA Format)</button>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script>
+        // Initialize Map centered on ABQ region
+        var map = L.map('map').setView([35.0844, -106.6504], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Add Draw Tools
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+        var drawControl = new L.Control.Draw({
+            edit: { featureGroup: drawnItems },
+            draw: { polygon: true, polyline: false, rectangle: true, circle: false, marker: false, circlemarker: false }
+        });
+        map.addControl(drawControl);
+
+        map.on(L.Draw.Event.CREATED, function (event) {
+            drawnItems.clearLayers(); // Only keep one boundary at a time
+            drawnItems.addLayer(event.layer);
+        });
+
+        document.getElementById('exportBtn').onclick = function() {
+            var data = drawnItems.toGeoJSON();
+            if (data.features.length === 0) {
+                alert("Please draw a field first!");
+                return;
+            }
+
+            // Send to Flask
+            fetch('/convert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data.features[0])
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "field_boundary_shp.zip";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            });
+        };
+    </script>
+</body>
+</html>

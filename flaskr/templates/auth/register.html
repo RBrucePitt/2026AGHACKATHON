@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    
+    {% for name, label, type in fields %}
+      <label for="{{ name }}">{{ label }}</label>
+      <input type="{{ type }}" name="{{ name }}" id="{{ name }}" value="{{ request.form[name] }}" required>
+    {% endfor %}    
+
+    <input type="submit" value="Register">
+  </form>
+{% endblock %}

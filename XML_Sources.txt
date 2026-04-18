@@ -1,0 +1,37 @@
+Provide a link to the XML format for submissions
+
+The USDA does not provide a single "click-to-download" XML file for general use because the schema is maintained as part of a larger technical framework called ACRSI (Acreage Crop Reporting Streamlining Initiative).
+
+To access the technical format and XML schemas for electronic submissions, you should use the following official developer and data standard links:
+
+1. Official USDA Data Standards (GitHub)
+The USDA hosts its electronic exchange standards on GitHub. This is the primary repository for developers building software to interface with the FSA-578 data systems.
+
+Main Collaboration Site: USDA Acreage Crop Reporting Data Standards
+
+ACRSI Subdomain: This section specifically covers the data elements and XML specifications for acreage reporting.
+
+2. NIEM (National Information Exchange Model)
+The USDA follows the NIEM standard for its XML structures. If you are looking for the structural "grammar" of the submission:
+
+NIEM USDA Domain: NIEM.gov - USDA Domain
+
+Note: You will need to search for the "Acreage" or "Agriculture" namespaces within the NIEM releases to find the specific XSD (XML Schema Definition) files used by the USDA.
+
+3. ACRSI Technical Documentation
+For the business logic and how the XML fields map to the FSA-578 form, the USDA Risk Management Agency (RMA) provides the technical framework:
+
+ACRSI Technical Overview: RMA Acreage Reporting Initiative
+
+This includes the Commodity Validation Tables, which are essential for ensuring the values inside your XML (like crop codes and intended use) are valid.
+
+Summary of XML Requirements
+If you are generating these files, the submission must typically validate against the following:
+
+Namespace: Usually defined under a USDA-specific URI within the NIEM framework.
+
+Key Root Elements: <AcreageReport>, <Producer>, <Crop>, and <Location>.
+
+Geospatial Integration: Most electronic submissions require the coordinates to be formatted within the XML or referenced as a linked GML (Geography Markup Language) or Shapefile component.
+
+Warning for Individual Farmers: Unless you are a software developer, it is highly recommended to use Authorized Third-Party Software (like John Deere Operations Center or Climate FieldView). These platforms are already programmed with the USDA's XML schemas and will handle the electronic "handshake" with the USDA Clearinghouse on your behalf.

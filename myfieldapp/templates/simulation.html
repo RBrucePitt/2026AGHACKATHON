@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDA Shapefile Portal Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .step-card { display: none; transition: all 0.3s ease; }
+        .active { display: block; }
+        .ui-screenshot { border: 2px solid #ddd; border-radius: 8px; margin: 15px 0; max-width: 100%; }
+        .progress-bar-fill { animation: grow 2s ease-in-out; }
+        @keyframes grow { from { width: 0%; } to { width: 100%; } }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5">
+                <h2 class="text-success">USDA Geospatial Data Bridge</h2>
+                <p class="text-muted">Converting Field Boundaries to FSA-578 Standards</p>
+            </div>
+
+            <div id="step1" class="card shadow step-card active">
+                <div class="card-body text-center p-5">
+                    <div class="spinner-border text-success mb-3" role="status"></div>
+                    <h4>Processing Field Geometry...</h4>
+                    <p>GeoPandas is calculating $WGS84$ coordinates and generating <code>.prj</code>, <code>.dbf</code>, and <code>.shx</code> files.</p>
+                    <div class="progress mt-4">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success progress-bar-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step2" class="card shadow step-card">
+                <div class="card-body p-5">
+                    <h4 class="text-success">✅ File Ready for USDA Submission</h4>
+                    <p>Your boundary has been compressed into a compliant <code>.zip</code> bundle.</p>
+                    
+                    
+                    
+                    <div class="bg-dark text-white p-3 rounded mb-3">
+                        <code>field_boundary_shp.zip (Includes .shp, .shx, .dbf, .prj)</code>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="nextStep(3)">Next: How to Upload to Farmers.gov</button>
+                </div>
+            </div>
+
+            <div id="step3" class="card shadow step-card">
+                <div class="card-body p-4">
+                    <h5>Step 1: Log in to Farmers.gov</h5>
+                    <p class="small text-muted">Use your Login.gov credentials to access the Land dashboard.</p>
+                    
+                    
+                    
+                    <hr>
+                    <h5>Step 2: Import Your Layer</h5>
+                    <p>In the map view, select <strong>Add Layer</strong> > <strong>Import Shapefile</strong>. Select the zip file you just downloaded.</p>
+                    <div class="alert alert-warning">
+                        <strong>Note:</strong> Ensure your field doesn't overlap existing CLU boundaries.
+                    </div>
+                    <button class="btn btn-outline-secondary" onclick="window.location.href='/'">
+                        ← Return to Map (Start Over)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple simulation logic
+    function nextStep(stepNum) {
+        document.querySelectorAll('.step-card').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + stepNum).classList.add('active');
+    }
+
+    // Auto-transition from loading to success after 2.5 seconds
+    setTimeout(() => {
+        if(document.getElementById('step1').classList.contains('active')) {
+            nextStep(2);
+        }
+    }, 2500);
+</script>
+
+</body>
+</html>

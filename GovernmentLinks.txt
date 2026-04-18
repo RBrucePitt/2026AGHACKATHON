@@ -1,0 +1,50 @@
+Provide all links to get the summary of items requirements
+
+For a farmer or developer looking to manage the FSA-578 requirements, the information is split between administrative instructions (how to fill the boxes) and technical specifications (the data exchange format).
+
+Below are the direct links and a summary of the item requirements for electronic submission.
+
+1. Administrative: Item Requirements (FSA-578)
+When filing electronically (via email, Farmers.gov, or third-party software), you must satisfy the requirements for Items 1 through 23.
+
+Official Form Instructions (PDF): Instructions for FSA-578 Manual
+
+Item Summary Table:
+
+Item #	Data Requirement	Description
+1-3	Farm Identity	Farm Number, total Farmland, and total Cropland.
+5	Operator Info	Name and address of the primary operator.
+7-10	Producer Links	Identifying "Other Producers" with shares in the crop.
+12-13	Tract/Field	The specific Tract and Field number (must match USDA CLU maps).
+14	Crop & Type	The specific crop (e.g., Corn) and variety (e.g., Yellow, Sweet).
+15	Practice	I (Irrigated) or N (Non-irrigated).
+16	Land Use	Reported acreage (or number of taps for maple/hives for honey).
+17	Status Code	I (Initial), D (Double-cropped), P (Prevented), F (Failed).
+18-19	Shares	The key for each producer and their percentage share.
+2. Technical: Electronic Filing & Data Exchange
+If you are automating this or using precision ag software, the USDA utilizes the Acreage Crop Reporting Streamlining Initiative (ACRSI) framework.
+
+Technical Data Exchange Standard: USDA ACRSI Data Exchange (GitHub)
+
+This link provides the NIEM (National Information Exchange Model) XML schemas and documentation for how software transmits acreage data to the USDA.
+
+Secure Submission Tools: Farmers.gov OneSpan & Box Guidance
+
+Links to the tools used for e-signatures and secure file sharing without needing a full Level 2 eAuthentication.
+
+ACRSI Initiative Overview: ACRSI Brochure & Framework
+
+Explains how data shared with an Approved Insurance Provider (AIP) is electronically transmitted to the FSA.
+
+3. Submission Portals
+FSA eForms Portal: USDA eForms Home
+
+Search for "FSA-578" to find the fillable PDF version.
+
+Authenticated Access: Farmers.gov Login
+
+Requires a Level 2 eAuthentication to view maps and manage reporting directly.
+
+Service Center Locator: USDA Office Locator
+
+Essential for getting the Farm, Tract, and Field numbers required for the form if you do not have your current map.

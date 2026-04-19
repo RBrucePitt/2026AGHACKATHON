@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 style="color: var(--usda-teal);">FSA-578 Report of Acreage</h2>
+<p style="color: #555; margin-bottom: 25px;">Step 1 of 2: General Information</p>
+
+<form method="POST">
+    <div class="form-group">
+        <label for="farm_no">2. Farm Number</label>
+        <input type="text" id="farm_no" name="farm_no" class="form-control" placeholder="Enter Farm No." required>
+    </div>
+    
+    <div class="form-group">
+        <label for="program_yr">4. Program Year</label>
+        <input type="number" id="program_yr" name="program_yr" class="form-control" placeholder="YYYY" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="operator_name">5. Operator Name and Address</label>
+        <textarea id="operator_name" name="operator_name" class="form-control" rows="3" placeholder="Full name and mailing address" required>{{ prefill_operator }}</textarea>
+    </div>
+
+    <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+        <a href="{{ url_for('home') }}" style="color: #666; text-decoration: none; padding: 10px;">Cancel</a>
+        <button type="submit" class="btn-primary">Next: Tract & Field Data &rarr;</button>
+    </div>
+</form>
+{% endblock %}

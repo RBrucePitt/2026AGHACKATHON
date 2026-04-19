@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 98% !important;
+        width: 98% !important;
+        margin: 10px auto !important;
+        padding: 15px !important;
+    }
+    #map {
+        height: 70vh; /* Takes up 70% of the viewport height */
+        width: 100%;
+        border-radius: 8px;
+        border: 2px solid var(--usda-teal);
+    }
+    .acreage-footer {
+        background: #f8f9fa;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #ddd;
+    }
+    #calculatedAcreage {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--ag-green);
+    }
+</style>
+
+<h2 style="color: var(--usda-teal);">Step 3: Map Field Boundary</h2>
+<p>Draw the boundary for <strong>Tract: {{ session.get('fsa_tract_no') }} | Field: {{ session.get('fsa_field_no') }}</strong></p>
+
+<div id="map"></div>
+
+<div class="acreage-footer">
+    <div>
+        <span style="display: block; color: #666; text-transform: uppercase; font-size: 0.8rem; font-weight: bold;">Calculated Field Size</span>
+        <span id="calculatedAcreage">0.00 Acres</span>
+    </div>
+    <div style="display: flex; gap: 15px;">
+        <a href="{{ url_for('fsa_step2') }}" class="btn btn-outline-secondary">Back to Step 2</a>
+        <button id="submitBtn" class="btn-primary" style="background-color: var(--usda-teal); padding: 10px 30px;">
+            Save & Complete Form
+        </button>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+
+<script>
+    var map = L.map('map').setView([35.0844, -106.6504], 14);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Esri'
+    }).addTo(map);
+
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    
+    var drawControl = new L.Control.Draw({
+        draw: { polygon: true, polyline: false, rectangle: true, circle: false, marker: false, circlemarker: false }
+    });
+    map.addControl(drawControl);
+
+    let currentAcreage = 0;
+
+    map.on(L.Draw.Event.CREATED, function (event) {
+        drawnItems.clearLayers(); 
+        drawnItems.addLayer(event.layer);
+        
+        // Calculate Area using Turf.js
+        var geojson = event.layer.toGeoJSON();
+        var area = turf.area(geojson); // square meters
+        currentAcreage = (area * 0.000247105).toFixed(2);
+        
+        document.getElementById('calculatedAcreage').innerText = currentAcreage + " Acres";
+    });
+
+    document.getElementById('submitBtn').onclick = function() {
+        if (currentAcreage == 0) {
+            alert("Please draw a boundary first!");
+            return;
+        }
+
+        // Send data to the backend
+        fetch('/fsa-578/finalize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ acreage: currentAcreage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = "{{ url_for('home') }}";
+        });
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 style="color: var(--usda-teal);">FSA-578 Report of Acreage</h2>
+<p style="color: #555; margin-bottom: 25px;">Step 2 of 2: Crop or Land Use Summary</p>
+
+<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem; border-left: 3px solid var(--usda-teal);">
+    <strong>Farm No:</strong> {{ session.get('fsa_farm_no', 'N/A') }} | 
+    <strong>Program Year:</strong> {{ session.get('fsa_program_yr', 'N/A') }}
+</div>
+
+<form method="POST">
+    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+        <div class="form-group" style="flex: 1;">
+            <label for="tract_no">12. Tract No.</label>
+            <input type="text" id="tract_no" name="tract_no" class="form-control" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label for="field_no">13. Field No.</label>
+            <input type="text" id="field_no" name="field_no" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="crop_use">14. Crop or Land Use</label>
+        <input type="text" id="crop_use" name="crop_use" class="form-control" required>
+    </div>
+
+    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+        <div class="form-group" style="flex: 1;">
+            <label for="practice">15. Practice</label>
+            <input type="text" id="practice" name="practice" class="form-control">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label for="crop_status">16. Crop Status</label>
+            <input type="text" id="crop_status" name="crop_status" class="form-control">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="share">19. Share (%)</label>
+        <input type="number" step="0.01" id="share" name="share" class="form-control" placeholder="100.00">
+    </div>
+
+    <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+        <a href="{{ url_for('fsa_step1') }}" style="color: #666; text-decoration: none; padding: 10px;">&larr; Back</a>
+        <button type="submit" class="btn-primary" style="background-color: var(--usda-teal);">Next: Map Field Boundary &rarr;</button>
+    </div>
+</form>
+{% endblock %}

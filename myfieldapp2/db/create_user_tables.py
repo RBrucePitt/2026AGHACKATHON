@@ -8,24 +8,24 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///green5x5.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
 
 # Database Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=True)
-    email = db.Column(db.String(120), unique=True, nullable=True)
-    phone = db.Column(db.String(20), nullable=True)
-    password = db.Column(db.String(60), nullable=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(60), nullable=False)
 
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # The 'ident' link to the User table
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     
     # Profile Fields
-    full_name = db.Column(db.String(100), nullable=True)
+    full_name = db.Column(db.String(100), nullable=False)
     company_name = db.Column(db.String(100))
     phone = db.Column(db.String(20))
     
@@ -42,11 +42,11 @@ class UserProfile(db.Model):
 class Farm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Relationships
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    profile_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    profile_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=False)
     
     # Farm Identification
-    farm_name = db.Column(db.String(100), nullable=True)
+    farm_name = db.Column(db.String(100), nullable=False)
     gov_farm_number = db.Column(db.String(50))
     
     # Address & Location
@@ -80,11 +80,11 @@ class Farm(db.Model):
 
 class Field(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     profile_id = db.Column(db.Integer, nullable=False)
     
-    field_name = db.Column(db.String(100), nullable=True)
+    field_name = db.Column(db.String(100), nullable=False)
     field_shapefile_name = db.Column(db.String(255))
     field_usda_guid = db.Column(db.String(100))
     internal_guid = db.Column(db.String(100), default=lambda: str(uuid.uuid4()))
@@ -95,11 +95,11 @@ class Field(db.Model):
 
 class Crop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=True)
-    user_id = db.Column(db.Integer, nullable=True)
-    profile_id = db.Column(db.Integer, nullable=True)
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
     
-    crop_name = db.Column(db.String(100), nullable=True)
+    crop_name = db.Column(db.String(100), nullable=False)
     crop_usda_code = db.Column(db.String(20))
     subtype = db.Column(db.String(100))
     land_usage = db.Column(db.String(100))

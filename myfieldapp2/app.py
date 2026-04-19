@@ -12,38 +12,38 @@ from sqlalchemy.exc import IntegrityError
 # --- 1. APP CONFIGURATION ---
 app = Flask(__name__)
 # The Secret Key is required for Flask-WTF forms to prevent CSRF errors
-app.config['SECRET_KEY'] = 'dev-key-123456789' 
+app.config['SECRET_KEY'] = 'your_secret_key_here' 
 # SQLite initialization: 'users.db' will be created in your project folder
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///green5x5.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # --- 2. DATABASE INITIALIZATION ---
 db = SQLAlchemy(app)
 
-# --- 3. DATABASE MODELS ---
+# Database Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    password = db.Column(db.String(60), nullable=True)
 
 class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # The 'ident' link to the User table
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True, unique=True)
     
     # Profile Fields
-    full_name = db.Column(db.String(100), nullable=False)
+    full_name = db.Column(db.String(100), nullable=True)
     company_name = db.Column(db.String(100))
     phone = db.Column(db.String(20))
     
     # Mailing Address Fields
-    address_line1 = db.Column(db.String(150), nullable=False)
-    address_line2 = db.Column(db.String(150))
-    city = db.Column(db.String(100), nullable=False)
-    state = db.Column(db.String(50), nullable=False)
-    zip_code = db.Column(db.String(10), nullable=False)
+    address_line1 = db.Column(db.String(150), nullable=True)
+    address_line2 = db.Column(db.String(150), nullable=True)
+    city = db.Column(db.String(100), nullable=True)
+    state = db.Column(db.String(50), nullable=True)
+    zip_code = db.Column(db.String(10), nullable=True)
 
     # Relationship to allow: user.profile
     user = db.relationship('User', backref=db.backref('profile', uselist=False))
@@ -51,11 +51,11 @@ class UserProfile(db.Model):
 class Farm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Relationships
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    profile_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    profile_id = db.Column(db.Integer, db.ForeignKey('user_profile.id'), nullable=True)
     
     # Farm Identification
-    farm_name = db.Column(db.String(100), nullable=False)
+    farm_name = db.Column(db.String(100), nullable=True)
     gov_farm_number = db.Column(db.String(50))
     
     # Address & Location
@@ -89,11 +89,11 @@ class Farm(db.Model):
 
 class Field(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=False)
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=True)
     user_id = db.Column(db.Integer, nullable=False)
     profile_id = db.Column(db.Integer, nullable=False)
     
-    field_name = db.Column(db.String(100), nullable=False)
+    field_name = db.Column(db.String(100), nullable=True)
     field_shapefile_name = db.Column(db.String(255))
     field_usda_guid = db.Column(db.String(100))
     internal_guid = db.Column(db.String(100), default=lambda: str(uuid.uuid4()))
@@ -104,15 +104,16 @@ class Field(db.Model):
 
 class Crop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
-    profile_id = db.Column(db.Integer, nullable=False)
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=True)
+    user_id = db.Column(db.Integer, nullable=True)
+    profile_id = db.Column(db.Integer, nullable=True)
     
-    crop_name = db.Column(db.String(100), nullable=False)
+    crop_name = db.Column(db.String(100), nullable=True)
     crop_usda_code = db.Column(db.String(20))
     subtype = db.Column(db.String(100))
     land_usage = db.Column(db.String(100))
     estimated_yield = db.Column(db.Float)
+
 
 # --- 4. FORM CLASSES ---
 class RegistrationForm(FlaskForm):
@@ -191,27 +192,29 @@ def logout():
 
 @app.route("/setup-profile", methods=['GET', 'POST'])
 def setup_profile():
-    # In a real app, you'd get the current_user.id from Flask-Login
-    # For now, we will assume we are editing user #1
-    user_id = 1 
+    # Fetch the profile for the current user (using the last user created for this demo)
+    last_user = User.query.order_by(User.id.desc()).first()
+    profile = UserProfile.query.filter_by(user_id=last_user.id).first() if last_user else None
     
     if request.method == 'POST':
-        profile = UserProfile(
-            user_id=user_id,
-            full_name=request.form.get('name'),
-            company_name=request.form.get('company'),
-            phone=request.form.get('phone'),
-            address_line1=request.form.get('address1'),
-            city=request.form.get('city'),
-            state=request.form.get('state'),
-            zip_code=request.form.get('zip')
-        )
-        db.session.add(profile)
-        db.session.commit()
-        flash('Profile updated successfully!', 'success')
-        return redirect(url_for('home'))
+        if not profile:
+            # CREATE NEW
+            profile = UserProfile(user_id=last_user.id)
+            db.session.add(profile)
         
-    return render_template('setup_profile.html')
+        # UPDATE FIELDS
+        profile.full_name = request.form.get('full_name')
+        profile.company_name = request.form.get('company_name')
+        profile.address_line1 = request.form.get('address_line1')
+        profile.city = request.form.get('city')
+        profile.state = request.form.get('state')
+        profile.zip_code = request.form.get('zip_code')
+        
+        db.session.commit()
+        flash('Profile information saved!', 'success')
+        return redirect(url_for('setup_profile'))
+            
+    return render_template('setup_profile.html', profile=profile)
 
 @app.route("/farms", methods=['GET', 'POST'])
 def manage_farms():

@@ -176,6 +176,10 @@ def login():
 def home():
     return render_template('home.html')
 
+@app.route("/getting-started")
+def getting_started():
+    return render_template('getting_started.html')
+
 @app.route("/logout")
 def logout():
     flash('You have been logged out.', 'info')

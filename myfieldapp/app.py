@@ -2,6 +2,7 @@ import os
 import zipfile
 import io
 import geopandas as gpd
+import uuid
 from flask import Flask, render_template, request, send_file, jsonify
 from shapely.geometry import shape
 
@@ -13,7 +14,9 @@ def index():
 
 @app.route('/simulator')
 def simulator():
-    return render_template('simulation.html')
+    # Generate a unique reference for this specific "submission"
+    submission_id = str(uuid.uuid4()).upper()
+    return render_template('simulation.html', submission_id=submission_id)
 
 @app.route('/convert', methods=['POST'])
 def convert():

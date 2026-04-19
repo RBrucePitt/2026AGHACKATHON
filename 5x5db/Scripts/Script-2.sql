@@ -1,0 +1,4 @@
+CREATE TABLE tlkCounty (
+	CountyCode CHAR NOT NULL PRIMARY KEY,
+	County VARCHAR NOT NULL
+);

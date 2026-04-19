@@ -154,22 +154,26 @@ def landing():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        # Create user instance
         new_user = User(
             username=form.username.data,
             email=form.email.data,
             phone=form.phone.data,
-            password=form.password.data # Note: In production, use hashing (bcrypt)
+            password=form.password.data 
         )
         try:
             db.session.add(new_user)
             db.session.commit()
-            # Fake verification email message as requested
-            flash(f'Account created! A verification email has been sent to {form.email.data}.', 'success')
+            
+            # FIX: Create an empty profile so Step 1 doesn't crash or stay empty
+            new_profile = UserProfile(user_id=new_user.id, full_name=new_user.username, phone=new_user.phone)
+            db.session.add(new_profile)
+            db.session.commit()
+
+            flash(f'Account created! You can now login.', 'success')
             return redirect(url_for('login'))
-        except:
+        except Exception as e:
             db.session.rollback()
-            flash('That email or username is already taken.', 'danger')
+            flash('Error creating account. Email or Username may be taken.', 'danger')
             
     return render_template('register.html', form=form)
 
@@ -177,21 +181,25 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
+        # Search for the user by email
         user = User.query.filter_by(email=form.email.data).first()
+        
+        # Check if user exists and password matches plain text
         if user and user.password == form.password.data:
-            flash('You have successfully logged in!', 'success')
-            session['user_id'] = user.id
+            session['user_id'] = user.id  # CRITICAL: This logs the user in
+            session['username'] = user.username
+            flash(f'Welcome back, {user.username}!', 'success')
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', form=form)
-
 @app.route("/home")
 def home():
     return render_template('home.html')
 
 @app.route("/logout")
 def logout():
+    session.clear() # Removes user_id and logged-in status
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 

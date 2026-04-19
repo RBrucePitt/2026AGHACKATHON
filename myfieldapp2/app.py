@@ -12,7 +12,6 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo
 import uuid
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
-from models import db, Account, FieldReport
 
 
 # --- 1. APP CONFIGURATION ---
@@ -20,10 +19,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev-key-123456789' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# Secondary database binds
-app.config['SQLALCHEMY_BINDS'] = {
-    'lookup_db': 'sqlite:///5x5db.db'
-}
 
 # --- 2. DATABASE INITIALIZATION ---
 db = SQLAlchemy(app)
@@ -95,14 +90,6 @@ class Crop(db.Model):
     subtype = db.Column(db.String(100))
     land_usage = db.Column(db.String(100))
     estimated_yield = db.Column(db.Float)
-
-# This table goes into lookups.db
-class CountyLookup(db.Model):
-    __bind_key__ = 'lookup_db' # Matches the key in SQLALCHEMY_BINDS
-    __tablename__ = 'tlkCounty'
-    
-    CountyCode = db.Column(db.String(5), primary_key=True)
-    County = db.Column(db.String(50))
 
 # --- 4. FORM CLASSES ---
 class RegistrationForm(FlaskForm):
@@ -191,7 +178,6 @@ def home():
 
 @app.route("/logout")
 def logout():
-    # Session logic removed. Just redirects.
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
@@ -218,7 +204,7 @@ def setup_profile():
         try:
             db.session.commit()
             flash('Profile updated successfully!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('manage_farms'))
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'danger')
@@ -227,7 +213,6 @@ def setup_profile():
 
 @app.route("/farms", methods=['GET', 'POST'])
 def manage_farms():
-    # Using hardcoded test user instead of ordering by random id
     profile = UserProfile.query.filter_by(user_id=TEST_USER_ID).first()
     
     if request.method == 'POST':
@@ -241,17 +226,20 @@ def manage_farms():
         try:
             db.session.add(new_farm)
             db.session.commit()
-            flash('Farm added successfully!', 'success')
-            return redirect(url_for('manage_farms'))
+            flash('Farm saved! Proceeding to mapping.', 'success')
+            
+            # CHANGE: Redirect directly to Step 3 with URL parameters
+            return redirect(url_for('fsa_step3', 
+                                    farm_no=new_farm.gov_farm_number, 
+                                    program_yr=2026)) 
             
         except IntegrityError:
             db.session.rollback() 
-            flash('Error: The Farm Name is required. Please fill it in and try again.', 'danger')
+            flash('Error: The Farm Name is required.', 'danger')
             return redirect(url_for('manage_farms'))
-            
         except Exception as e:
             db.session.rollback()
-            flash('An unexpected error occurred. Please try again.', 'danger')
+            flash('An unexpected error occurred.', 'danger')
             return redirect(url_for('manage_farms'))
 
     farms = Farm.query.filter_by(profile_id=profile.id).all() if profile else []
@@ -271,7 +259,7 @@ def manage_fields(farm_id):
         db.session.add(new_field)
         db.session.commit()
         flash('Field created successfully!', 'success')
-        return redirect(url_for('manage_fields', farm_id=farm.id))
+        return redirect(url_for('fsa_step3', farm_id=farm.id))
 
     fields = Field.query.filter_by(farm_id=farm_id).all()
     return render_template('fields.html', farm=farm, fields=fields)
@@ -330,10 +318,17 @@ def fsa_step2():
 
 @app.route("/fsa-578/step3")
 def fsa_step3():
-    # Pull the data back out of the URL
-    tract_no = request.args.get('tract')
-    field_no = request.args.get('field')
-    return render_template('fsa_step3.html', tract_no=tract_no, field_no=field_no)
+    # Pull data from the URL parameters
+    farm_no = request.args.get('farm_no', 'N/A')
+    program_yr = request.args.get('program_yr', 'N/A')
+    tract_no = request.args.get('tract', 'N/A')
+    field_no = request.args.get('field', 'N/A')
+    
+    return render_template('fsa_step3.html', 
+                           farm_no=farm_no, 
+                           program_yr=program_yr,
+                           tract_no=tract_no, 
+                           field_no=field_no)
 
 @app.route('/fsa-578/convert', methods=['POST'])
 def convert_shapefile():
@@ -383,17 +378,10 @@ def fsa_finalize():
     flash(f'FSA-578 submitted successfully! Total Acreage: {acreage}', 'success')
     return jsonify({"status": "success"})
 
-@app.route('/test-data')
-def test_data():
-    # Queries users.db
-    user_count = User.query.count()
-    
-    # Queries lookups.db
-    counties = CountyLookup.query.all()
-    for countyCode, county in counties:
-        print(countyCode, county)
-    
-    return f"Found {user_count} users and {len(counties)} counties."
+@app.route("/simulator")
+def simulator():
+    # Renders the simulation page corresponding to the hackathon repository
+    return render_template('simulation.html')
 
 # --- 7. RUN THE APP ---
 if __name__ == '__main__':

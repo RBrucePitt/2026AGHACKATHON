@@ -1,3 +1,10 @@
+<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem; border-left: 3px solid var(--usda-teal);">
+    <strong>Farm No:</strong> {{ farm_no }} | 
+    <strong>Program Year:</strong> {{ program_yr }}
+</div>
+
+<p>Draw the boundary for <strong>Tract: {{ tract_no }} | Field: {{ field_no }}</strong></p>
+
 {% extends "layout.html" %}
 
 {% block content %}
@@ -33,6 +40,16 @@
 
 <h2 style="color: var(--usda-teal);">Step 3: Map Field Boundary</h2>
 <p>Draw the boundary for <strong>Tract: {{ tract_no }} | Field: {{ field_no }}</strong></p>
+
+<div class="controls" style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; border: 1px solid #ddd;">
+    <strong style="color: var(--usda-teal);">Map Actions:</strong>
+    <button id="exportBtn" class="btn btn-secondary" style="padding: 8px 15px; border-radius: 4px; border: 1px solid #6c757d;">
+        Export to .SHP (USDA Format)
+    </button>
+    <a href="{{ url_for('simulator') }}" class="btn btn-outline-secondary" style="padding: 8px 15px; border-radius: 4px; text-decoration: none; border: 1px solid #666; background: #e0e0e0; color: black;">
+        2. Upload to USDA (Simulation)
+    </a>
+</div>
 
 <div id="map"></div>
 
@@ -98,6 +115,43 @@
         .then(response => response.json())
         .then(data => {
             window.location.href = "{{ url_for('home') }}";
+        });
+    };
+
+    document.getElementById('exportBtn').onclick = function() {
+        var data = drawnItems.toGeoJSON();
+        
+        // Ensure the user actually drew a shape
+        if (data.features.length === 0) {
+            alert("Please draw a field boundary first!");
+            return;
+        }
+
+        // Send the drawn shape feature to your Flask backend
+        fetch('/fsa-578/convert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data.features[0])
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to export shapefile");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Trigger the download of the ZIP file
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "fsa578_field_boundary.zip";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => {
+            console.error("Export Error:", error);
+            alert("There was an error generating the shapefile.");
         });
     };
 </script>

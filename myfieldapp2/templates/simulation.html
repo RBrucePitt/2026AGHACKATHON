@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USDA Shapefile Portal Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .step-card { display: none; border: none; }
+        .active { display: block; animation: fadeIn 0.5s; }
+        
+        /* Progress Bar Animation */
+        .progress-bar-fill { 
+            animation: grow 2.5s ease-in-out forwards; 
+            width: 0%; 
+        }
+        
+        @keyframes grow { 
+            from { width: 0%; } 
+            to { width: 100%; } 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+
+        .ui-screenshot { 
+            border: 2px solid #dee2e6; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+            width: 100%; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+
+        .code-block { 
+            background: #212529; 
+            color: #00ff00; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem; 
+        }
+        
+        .status-badge { font-family: monospace; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="text-center mb-4">
+                <img src="https://www.usda.gov/themes/custom/usda/logo.svg" alt="USDA Logo" style="height: 60px; margin-bottom: 15px;">
+                <h2 class="fw-bold">FSA-578 Geospatial Submission Portal</h2>
+                <p class="text-muted">Digital Acreage Reporting & Shapefile Integration</p>
+            </div>
+
+            <div id="step1" class="card shadow-sm step-card active">
+                <div class="card-body text-center p-5">
+                    <h4 class="mb-3 text-primary">Executing GeoPandas Engine...</h4>
+                    <p class="text-secondary">Parsing geometry and calculating $WGS84$ ($EPSG:4326$) vertex parity.</p>
+                    <div class="progress mt-4" style="height: 25px; border-radius: 12px; background-color: #e9ecef;">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated progress-bar-fill" role="progressbar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step2" class="card shadow-sm step-card">
+                <div class="card-body p-5">
+                    <h4 class="text-success d-flex align-items-center mb-3">
+                        <span class="me-2">✅</span> Geometry Validated & Packed
+                    </h4>
+                    
+                    <div class="alert alert-dark d-flex justify-content-between align-items-center mb-4">
+                        <div><strong>Local Process GUID:</strong> <code class="text-info fs-5" id="local-guid"></code></div>
+                        <span class="badge bg-secondary">INTERNAL_REF</span>
+                    </div>
+
+                    <div class="code-block my-4">
+                        <div>📦 field_boundary_shp.zip</div>
+                        <div class="ms-3">├── field_boundary.shp (Geometry)</div>
+                        <div class="ms-3">├── field_boundary.shx (Index)</div>
+                        <div class="ms-3">├── field_boundary.dbf (Attributes)</div>
+                        <div class="ms-3">└── field_boundary.prj (Projection)</div>
+                    </div>
+                    
+                    <button class="btn btn-success btn-lg w-100 shadow-sm" onclick="nextStep(3)">
+                        Proceed to Farmers.gov Upload Simulation →
+                    </button>
+                </div>
+            </div>
+
+            <div id="step3" class="card shadow-sm step-card">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold border-bottom pb-2 mb-3">USDA Map Reference Simulation</h5>
+                    
+                    <img src="http://googleusercontent.com/image_generation_content/0" class="ui-screenshot" alt="USDA-FSA Acreage Report Simulation">
+
+                    <div class="mt-4 p-4 border-start border-4 border-success bg-white shadow-sm rounded">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="text-success fw-bold mb-0">USDA GEOSPATIAL INGESTION SUCCESS</h6>
+                            <span class="badge bg-primary status-badge">PENDING_CERTIFICATION</span>
+                        </div>
+                        <hr>
+                        <div class="row g-3 small">
+                            <div class="col-sm-4 text-muted">REFERENCE ID:</div>
+                            <div class="col-sm-8 text-dark"><strong>NM-001-2026-F500-T101-SHP</strong></div>
+                            
+                            <div class="col-sm-4 text-muted">FEATURE GUID:</div>
+                            <div class="col-sm-8"><code class="text-dark bg-light p-1" id="final-guid"></code></div>
+                            
+                            <div class="col-sm-4 text-muted">FSA-578 ITEM 11:</div>
+                            <div class="col-sm-8 text-dark">NAIP_2023_NM001_T101</div>
+
+                            <div class="col-sm-4 text-muted">TIMESTAMP:</div>
+                            <div class="col-sm-8 text-dark" id="current-time"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-outline-secondary w-100" onclick="window.location.href='/fsa-578/step3'">
+                            ← Return to Map (Start Over)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generate a unique GUID for the entire session
+    function generateGUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16).toUpperCase();
+        });
+    }
+
+    const sessionGUID = generateGUID();
+
+    function nextStep(stepNum) {
+        document.querySelectorAll('.step-card').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + stepNum).classList.add('active');
+        
+        // Pass the same GUID to all relevant displays
+        if(stepNum === 2) {
+            document.getElementById('local-guid').innerText = "{" + sessionGUID + "}";
+        }
+        if(stepNum === 3) {
+            document.getElementById('final-guid').innerText = "{" + sessionGUID + "}";
+            document.getElementById('current-time').innerText = new Date().toLocaleString();
+        }
+    }
+
+    // Initialize the auto-transition when the progress bar "finishes"
+    window.onload = function() {
+        setTimeout(() => {
+            if(document.getElementById('step1').classList.contains('active')) {
+                nextStep(2);
+            }
+        }, 2600); // Slightly longer than the CSS animation
+    };
+</script>
+
+</body>
+</html>

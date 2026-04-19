@@ -12,6 +12,7 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo
 import uuid
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
+from models import db, Account, FieldReport
 
 
 # --- 1. APP CONFIGURATION ---
@@ -21,6 +22,10 @@ app.config['SECRET_KEY'] = 'dev-key-123456789'
 # SQLite initialization: 'users.db' will be created in your project folder
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Secondary database binds
+app.config['SQLALCHEMY_BINDS'] = {
+    'lookup_db': 'sqlite:///5x5db.db'
+}
 
 # --- 2. DATABASE INITIALIZATION ---
 db = SQLAlchemy(app)
@@ -118,6 +123,14 @@ class Crop(db.Model):
     subtype = db.Column(db.String(100))
     land_usage = db.Column(db.String(100))
     estimated_yield = db.Column(db.Float)
+
+# This table goes into lookups.db
+class CountyLookup(db.Model):
+    __bind_key__ = 'lookup_db' # Matches the key in SQLALCHEMY_BINDS
+    __tablename__ = 'tlkCounty'
+    
+    CountyCode = db.Column(db.String(5), primary_key=True)
+    County = db.Column(db.String(50))
 
 # --- 4. FORM CLASSES ---
 class RegistrationForm(FlaskForm):
@@ -430,6 +443,18 @@ def fsa_finalize():
     
     flash(f'FSA-578 submitted successfully! Total Acreage: {acreage}', 'success')
     return jsonify({"status": "success"})
+
+@app.route('/test-data')
+def test_data():
+    # Queries users.db
+    user_count = User.query.count()
+    
+    # Queries lookups.db
+    counties = CountyLookup.query.all()
+    for countyCode, county in counties:
+        print(countyCode, county)
+    
+    return f"Found {user_count} users and {len(counties)} counties."
 
 # --- 7. RUN THE APP ---
 if __name__ == '__main__':

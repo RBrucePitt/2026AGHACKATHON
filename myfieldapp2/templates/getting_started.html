@@ -1,0 +1,53 @@
+<!DOCTYPE html> <html> <head> <title>USDA Eligibility Steps</title> <style> body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; } .navbar { background: #1b5e20; color: white; padding: 1rem; } .navbar a { color: white; text-decoration: none; margin-left: 10px; } .container { padding: 2rem; max-width: 800px; margin: auto; background: white; } .flash-success { color: green; padding: 10px; border: 1px solid green; } .error { color: red; } .footer { background-color: #333; color: white; text-align: center; padding: 20px 0; margin-top: 50px; width: 100%; } .footer-content a { color: #ddd; text-decoration: none; margin: 0 10px; } .footer-content a:hover { text-decoration: underline; } ol li { margin-bottom: 1rem; } </style> </head> <body> <div class="navbar"> <strong>My Application</strong> | <a href="{{ url_for('register') }}">Register</a> | <a href="{{ url_for('login') }}">Login</a> </div>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    <h1>Steps to USDA Eligibility</h1>
+    <ol>
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/ad2047.pdf">Form AD-2047, Customer Data Worksheet</a></strong><br>
+        Completed by individuals or legal entities who have not previously provided identifying information to USDA.</li>
+
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/ccc0860.pdf">Form CCC-860, Socially Disadvantaged, Limited Resource, Beginning and Veteran Farmer or Rancher Certification</a></strong><br>
+        Used to certify membership in qualifying producer groups.</li>
+
+        <li><strong>Establish a Farm Record and Obtain a Farm Number</strong><br>
+        Required for USDA program participation. Documentation such as a deed, lease, or heirs’ property verification may be needed.</li>
+
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/ad1026.pdf">Form AD-1026, Highly Erodible Land Conservation and Wetland Conservation Certification</a></strong><br>
+        Required for most USDA programs. Applicants with farming interests must complete the full form.</li>
+
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/ccc0941.pdf">Form CCC-941, Average Adjusted Gross Income (AGI) Certification</a></strong><br>
+        Certifies that the applicant’s AGI does not exceed $900,000.</li>
+
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/ccc0902ind.pdf">Form CCC-902I, Farm Operating Plan for an Individual</a></strong><br>
+        Provides information on the structure and contributions to the farming operation.</li>
+
+        <li><strong><a href="https://www.fsa.usda.gov/Internet/FSA_File/sf3881.pdf">Form SF-3881, Payment Enrollment Form for FSA</a></strong><br>
+        Used to set up or update direct deposit information for USDA payments.</li>
+
+        <li><strong><a href="https://www.gsa.gov/forms-library/direct-deposit-signup-form">Form SF-1199A, Payment Enrollment Form for NRCS</a></strong><br>
+        Used to set up or update direct deposit information for USDA NRCS payments.</li>
+    </ol>
+    {% endblock %}
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+      <p>&copy; 2026 My Application. All rights reserved.</p>
+      <p>
+          <a href="#">Privacy Policy</a> |
+          <a href="#">Terms of Service</a> |
+          <a href="mailto:support@example.com">Contact Support</a>
+      </p>
+  </div>
+</footer>
+
+</body> </html>

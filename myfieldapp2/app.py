@@ -192,28 +192,34 @@ def logout():
 
 @app.route("/setup-profile", methods=['GET', 'POST'])
 def setup_profile():
-    # Fetch the profile for the current user (using the last user created for this demo)
-    last_user = User.query.order_by(User.id.desc()).first()
-    profile = UserProfile.query.filter_by(user_id=last_user.id).first() if last_user else None
+    # Fetch the most recent user (or current_user if using Flask-Login)
+    user = User.query.order_by(User.id.desc()).first()
     
+    # Try to find an existing profile
+    profile = UserProfile.query.filter_by(user_id=user.id).first()
+
     if request.method == 'POST':
         if not profile:
-            # CREATE NEW
-            profile = UserProfile(user_id=last_user.id)
+            # Create new profile if it doesn't exist
+            profile = UserProfile(user_id=user.id)
             db.session.add(profile)
         
-        # UPDATE FIELDS
+        # Populate fields from your HTML form 'name' attributes
         profile.full_name = request.form.get('full_name')
         profile.company_name = request.form.get('company_name')
+        profile.phone = request.form.get('phone')
         profile.address_line1 = request.form.get('address_line1')
+        profile.address_line2 = request.form.get('address_line2')
         profile.city = request.form.get('city')
         profile.state = request.form.get('state')
         profile.zip_code = request.form.get('zip_code')
-        
+
         db.session.commit()
-        flash('Profile information saved!', 'success')
-        return redirect(url_for('setup_profile'))
-            
+        flash('Profile saved successfully!', 'success')
+        
+        # REDIRECT to the farms page
+        return redirect(url_for('manage_farms'))
+
     return render_template('setup_profile.html', profile=profile)
 
 @app.route("/farms", methods=['GET', 'POST'])

@@ -1,77 +1,95 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">User Dashboard</h2>
-
-    <div class="accordion" id="dashboardAccordion">
+<div class="profile-container">
+    <div class="main-block">
+        <h2>Business & Mailing Profile</h2>
+        <p>Please provide your contact and company details for USDA submittals.</p>
+        <hr>
         
-        <div class="accordion-item shadow-sm">
-            <h2 class="accordion-header" id="headingProfile">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile">
-                    <i class="bi bi-person-badge me-2"></i> Business & Mailing Profile
-                </button>
-            </h2>
-            <div id="collapseProfile" class="accordion-collapse collapse show" data-bs-parent="#dashboardAccordion">
-                <div class="accordion-body">
-                    <form action="{{ url_for('setup_profile') }}" method="POST">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" name="full_name" class="form-control" value="{{ profile.full_name if profile else '' }}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Company Name</label>
-                                <input type="text" name="company_name" class="form-control" value="{{ profile.company_name if profile else '' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Mailing Address</label>
-                            <input type="text" name="address_line1" class="form-control mb-2" placeholder="Street Address" value="{{ profile.address_line1 if profile else '' }}">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="text" name="city" class="form-control" placeholder="City" value="{{ profile.city if profile else '' }}">
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="text" name="state" class="form-control" placeholder="State" value="{{ profile.state if profile else '' }}">
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="text" name="zip_code" class="form-control" placeholder="Zip" value="{{ profile.zip_code if profile else '' }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            {{ 'Update Profile' if profile else 'Save Profile' }}
-                        </button>
-                    </form>
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company_name">
                 </div>
             </div>
-        </div>
 
-        <div class="accordion-item shadow-sm mt-3">
-            <h2 class="accordion-header" id="headingFarms">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFarms">
-                    <i class="bi bi-house-door me-2"></i> Farm Assets
-                </button>
-            </h2>
-            <div id="collapseFarms" class="accordion-collapse collapse" data-bs-parent="#dashboardAccordion">
-                <div class="accordion-body text-center py-5">
-                    {% if profile %}
-                        <p class="lead">Manage your existing farms or register a new agricultural boundary.</p>
-                        <a href="{{ url_for('manage_farms') }}" class="btn btn-success btn-lg">
-                            <i class="bi bi-plus-circle"></i> Go to Farm Management
-                        </a>
-                    {% else %}
-                        <div class="alert alert-warning">
-                            Please save your <strong>Business Profile</strong> above before adding farm assets.
-                        </div>
-                    {% endif %}
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label>Mailing Address Line 1</label>
+                <input type="text" name="address_line1" placeholder="Street address or P.O. Box" required>
+            </div>
+
+            <div class="form-group">
+                <label>Address Line 2 (Optional)</label>
+                <input type="text" name="address_line2" placeholder="Apartment, suite, unit, etc.">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" name="state" placeholder="NM" required>
+                </div>
+                <div class="form-group">
+                    <label>Zip Code</label>
+                    <input type="text" name="zip_code" required>
                 </div>
             </div>
-        </div>
 
+            <div style="margin-top: 20px;">
+                <button type="submit" class="block-button">Next: Your Farm Info</button>
+                <a href="{{ url_for('home') }}" style="margin-left:15px; text-decoration:none; color:#666;">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 20px auto;
+    }
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensures padding doesn't break width */
+    }
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+    .form-row .form-group {
+        flex: 1;
+    }
+    .main-block {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+</style>
 {% endblock %}

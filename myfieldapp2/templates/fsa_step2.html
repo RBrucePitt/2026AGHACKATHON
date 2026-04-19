@@ -5,8 +5,8 @@
 <p style="color: #555; margin-bottom: 25px;">Step 2 of 2: Crop or Land Use Summary</p>
 
 <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem; border-left: 3px solid var(--usda-teal);">
-    <strong>Farm No:</strong> {{ session.get('fsa_farm_no', 'N/A') }} | 
-    <strong>Program Year:</strong> {{ session.get('fsa_program_yr', 'N/A') }}
+    <strong>Farm No:</strong> {{ request.args.get('farm_no', 'N/A') }} | 
+    <strong>Program Year:</strong> {{ request.args.get('program_yr', 'N/A') }}
 </div>
 
 <form method="POST">

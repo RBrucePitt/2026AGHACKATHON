@@ -282,9 +282,13 @@ def add_crop(field_id):
 @app.route("/fsa-578/step1", methods=['GET', 'POST'])
 def fsa_step1():
     if request.method == 'POST':
-        # Session storage removed. Form data will not persist between pages for now.
-        return redirect(url_for('fsa_step2'))
+        # Grab the data from the form fields
+        f_no = request.form.get('farm_no')
+        p_yr = request.form.get('program_yr')
         
+        # Pass them as URL parameters to step 2
+        return redirect(url_for('fsa_step2', farm_no=f_no, program_yr=p_yr))
+            
     prefill_operator = ""
     profile = UserProfile.query.filter_by(user_id=TEST_USER_ID).first()
     
@@ -303,14 +307,20 @@ def fsa_step1():
 @app.route("/fsa-578/step2", methods=['GET', 'POST'])
 def fsa_step2():
     if request.method == 'POST':
-        # Session storage removed.
-        return redirect(url_for('fsa_step3'))
+        # Grab the data from the form
+        tract = request.form.get('tract_no')
+        field = request.form.get('field_no')
+        # Pass the data to the NEXT route via the URL
+        return redirect(url_for('fsa_step3', tract=tract, field=field))
         
     return render_template('fsa_step2.html')
 
-@app.route("/fsa-578/step3", methods=['GET'])
+@app.route("/fsa-578/step3")
 def fsa_step3():
-    return render_template('fsa_step3.html')
+    # Pull the data back out of the URL
+    tract_no = request.args.get('tract')
+    field_no = request.args.get('field')
+    return render_template('fsa_step3.html', tract_no=tract_no, field_no=field_no)
 
 @app.route('/fsa-578/convert', methods=['POST'])
 def convert_shapefile():

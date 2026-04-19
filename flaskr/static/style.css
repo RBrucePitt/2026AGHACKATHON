@@ -1,0 +1,217 @@
+:root {
+  --primary-green: #1b4d3e; /* Professional Forest Green */
+  --accent-gold: #c5a059;   /* Harvest Gold for subtle accents */
+  --bg-light: #f4f7f6;
+  --text-main: #2c3e50;
+  --border-color: #d1d8d5;
+}
+
+/* General Layout */
+body { 
+  background-color: var(--bg-light); 
+  margin: 0; 
+  color: var(--text-main);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;           /* Turns on flexbox */
+  flex-direction: column;  /* Stacks items top-to-bottom like pancakes! */
+}
+
+/* Navigation - The "Header" Vibe */
+.main-nav {
+  background-color: var(--primary-green);
+  color: white;
+  padding: 1rem 0;
+  border-bottom: 4px solid var(--accent-gold);
+}
+
+.nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.logo a {
+  color: white;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin: 0;
+}
+
+/* User identity styling */
+.user-info {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  width: 100%;             /* Keeps it from shrinking too narrow */
+  box-sizing: border-box; 
+  flex: 1;                 /* Forces this middle section to grow */
+}
+
+/* The "Card" Look for Content */
+.main-card {
+  background: white;
+  padding: 2.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Form Elements */
+input[type=submit] {
+  background-color: var(--primary-green);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.flash-banner {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-left: 5px solid #28a745;
+  margin-bottom: 1.5rem;
+}
+
+
+/* Navigation Layout */
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between; /* Pushes logo left, links right */
+    align-items: center;
+    padding: 0 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 1.25rem; /* Space between buttons */
+    margin: 0;
+    padding: 0;
+}
+
+/* Base link styles in the nav */
+.nav-links a {
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #ffffff;
+    transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+/* The Primary "Log In" Button */
+.btn-login {
+    background-color: #c5a059; /* Harvest Gold */
+    color: #1b4d3e !important; /* Deep Green Text */
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-login:hover {
+    background-color: #dcb875;
+    opacity: 1 !important;
+}
+
+/* The "Log Out" / Outline Button */
+.btn-outline {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 0.4rem 0.8rem;
+    border-radius: 2px;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+}
+
+/* This forces labels and inputs to stay on their own lines */
+/* Target the form inside the wrapper and main-card */
+.content-wrapper .main-card form {
+    display: flex;
+    flex-direction: column;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Ensure labels are block-level so they stay on their own lines */
+.main-card label {
+    display: block;
+    margin-top: 1.2rem;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+}
+
+.main-card input:not([type=submit]) {
+    width: 100%;
+    box-sizing: border-box; /* Crucial for keeping everything in line */
+    padding: 0.75rem;
+}
+
+.main-card form input[type=submit] {
+    margin-top: 1.5rem;      /* This creates the space you want */
+    padding: 0.8rem 2rem;    /* Makes the button chunky and clickable */
+    align-self: flex-start;  /* Stops it from stretching full-width */
+    border-radius: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.main-footer {
+    background-color: #1b4d3e; 
+    border-top: 4px solid var(--accent-gold); /* Added the gold line! */
+    padding: 2rem 0;
+    color: #c5a059;
+    text-align: center;
+    width: 100%;
+    flex-shrink: 0; /* Tells the footer to hold its shape */
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;}
+
+.main-footer p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.footer-subtext {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}

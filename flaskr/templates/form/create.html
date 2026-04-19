@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  <form method="post">
+    <label for="year">Crop Year</label>
+    <input name="year" id="year" type="number" value="2026" required>
+    
+    <label for="farm_name">Farm Name</label>
+    <input name="farm_name" id="farm_name" value="{{ g.user['farm_name'] }}" required>
+    
+    <input type="submit" value="Initialize Report">
+  </form>
+{% endblock %}

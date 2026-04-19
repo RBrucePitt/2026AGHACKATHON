@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | Greener 5x5</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <nav class="main-nav">
+    <div class="nav-container">
+      <h1 class="logo">
+        <a href="{{ url_for('index') }}">Greener 5x5</a>
+      </h1>
+      <ul class="nav-links">
+        {% if g.user %}
+          <li class="user-info">
+            <strong>{{ g.user['first_name'] }}</strong> ({{ g.user['farm_name'] }})
+          </li>
+          <li><a href="{{ url_for('auth.logout') }}" class="btn-outline">Log Out</a></li>
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+          <li><a href="{{ url_for('auth.login') }}" class="btn-login">Log In</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content-wrapper">
+    
+    {% for message in get_flashed_messages() %}
+      <div class="flash-banner">{{ message }}</div>
+    {% endfor %}
+
+    <header class="page-header">
+      {% block header %}{% endblock %}
+    </header>
+
+    <section class="main-card">
+      {% block content %}{% endblock %}
+    </section>
+
+  </main>
+
+</body>
+
+<footer class="main-footer">
+  <div class="footer-container">
+    <p>&copy; 2026 Greener 5x5 - Official Acreage Reporting Tool</p>
+  </div>
+</footer>
+
+</html>

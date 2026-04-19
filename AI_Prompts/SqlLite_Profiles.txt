@@ -1,0 +1,6 @@
+Create a SQL lite table that is indexed by the USER table ident with that contains the following fields: name, mailing address (all fields), phone, Company Name. Create the Python code to create this table and the python code to add to app.py to access this table.
+
+Create a SQL lite table that is indexed by the user table ident and the profile table ident called farms with the following fields: Farm Name, Government Farm Number, address fields including county, farmland type, crop land type, operator name, operator address and phone, google klm file name, usda shape file name, usda shape file guid, system guid, date created, last update date. There will be a one to many relationship between profiles and farms and the site should have the ability to add farms and list those farms in a bootstrap collapsible field which lists them when opened.
+
+
+

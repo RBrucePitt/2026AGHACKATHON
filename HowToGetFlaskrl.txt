@@ -1,0 +1,33 @@
+Flaskr is just the name of the application inside the tutorial, so there isn't a package you can just import like import flaskr.
+
+However, if you want the code right now without doing the tutorial, you can just download the source files directly from the Flask GitHub repository.
+
+Quickest Way: The ZIP Download
+If you don't want to use Git, you can download just the tutorial files as a ZIP:
+
+Go to the Flask Examples GitHub.
+
+Click the Code button (green) and select Download ZIP.
+
+Once you extract it, the flaskr folder inside is the full app.
+
+How to Run it (Skip the Learning, Just the Code)
+Once you have the files, you just need to install the dependencies and run it:
+
+Bash
+# Install Flask
+pip install Flask
+
+# Set the environment variable so Flask knows where the app is
+export FLASK_APP=flaskr  # On Windows: set FLASK_APP=flaskr
+export FLASK_ENV=development
+
+# Initialize the database (this is a key Flaskr step)
+flask init-db
+
+# Run the app
+flask run
+Why you might see flaskr on PyPI
+If you search for it, you might find a project named flaskr on PyPI, but it’s an ancient, abandoned upload from 2018. Don't use it. It’s not the official tutorial code and will likely break your environment.
+
+If you're looking to use that specific Application Factory structure for your agricultural boundary tool, I can show you how to set up your own __init__.py file so you can do a local import like from my_app import create_app. Would that be more useful?

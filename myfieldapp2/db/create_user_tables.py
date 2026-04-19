@@ -78,6 +78,33 @@ class Farm(db.Model):
     # Relationship back to profile
     profile = db.relationship('UserProfile', backref=db.backref('farms', lazy=True))
 
+class Field(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
+    
+    field_name = db.Column(db.String(100), nullable=False)
+    field_shapefile_name = db.Column(db.String(255))
+    field_usda_guid = db.Column(db.String(100))
+    internal_guid = db.Column(db.String(100), default=lambda: str(uuid.uuid4()))
+    google_kml_filename = db.Column(db.String(255))
+
+    # Relationship to access crops easily
+    crops = db.relationship('Crop', backref='field', lazy=True)
+
+class Crop(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
+    
+    crop_name = db.Column(db.String(100), nullable=False)
+    crop_usda_code = db.Column(db.String(20))
+    subtype = db.Column(db.String(100))
+    land_usage = db.Column(db.String(100))
+    estimated_yield = db.Column(db.Float)
+
 # Initialize Database
 with app.app_context():
     db.create_all()

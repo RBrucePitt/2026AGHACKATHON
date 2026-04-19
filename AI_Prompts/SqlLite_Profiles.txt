@@ -2,5 +2,9 @@ Create a SQL lite table that is indexed by the USER table ident with that contai
 
 Create a SQL lite table that is indexed by the user table ident and the profile table ident called farms with the following fields: Farm Name, Government Farm Number, address fields including county, farmland type, crop land type, operator name, operator address and phone, google klm file name, usda shape file name, usda shape file guid, system guid, date created, last update date. There will be a one to many relationship between profiles and farms and the site should have the ability to add farms and list those farms in a bootstrap collapsible field which lists them when opened.
 
+Create a SWL lite table that is index by the farms table ident and contains the user ident and the profile ident and is call fields. The fields table contains an ident, field name, field shape file name, field USDA guid, internal guid, google KML filename. It is updated from the farms page where the is a add field button and a current list of fields by field name. THe fields create page contains the current LEAF page with the submission button (from the simulation page) along with a field name entry nox, an add crop button which brings up a popup that allows crops to be added to this field via a drop drawn and existing crops in this field are display (also display as a single line list on the main fields page). The crops would also have a SQL lite table that is indexed by the fields ident and also would contain the user and profile idents. THe table would have the Crop name, Crop USDA code, other fields might be subtype, land usage, estimated yield, etc. Generate all of the python db create code as well.
+
+
+
 
 

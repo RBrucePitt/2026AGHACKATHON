@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="main-block p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Field Boundary Creator: {{ farm.farm_name }}</h2>
+        <span class="badge bg-secondary">Farm ID: {{ farm.gov_farm_number or 'Pending' }}</span>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <i class="bi bi-map"></i> Field Boundary Drawing Tool
+        </div>
+        <div id="map" style="height: 500px; width: 100%;"></div>
+        <div class="card-footer bg-light">
+            <small class="text-muted">Click the map to start drawing. Double-click to close the polygon boundary.</small>
+        </div>
+    </div>
+
+    <div class="card border-primary mb-4">
+        <div class="card-body">
+            <form method="POST" id="fieldForm">
+                <div class="row align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label"><strong>Field Name / Ident</strong></label>
+                        <input type="text" name="field_name" class="form-control form-control-lg" placeholder="e.g. North Pasture A" required>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="submit" class="btn btn-primary btn-lg shadow">
+                            <i class="bi bi-cloud-upload"></i> Submit to USDA Simulation
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="geojson_data" id="geojson_data">
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Existing Fields & Crops</h3>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Field Name</th>
+                    <th>Crops in Field</th>
+                    <th>USDA GUID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field in fields %}
+                <tr>
+                    <td><strong>{{ field.field_name }}</strong></td>
+                    <td>
+                        {% for crop in field.crops %}
+                            <span class="badge rounded-pill bg-info text-dark">{{ crop.crop_name }}</span>
+                        {% else %}
+                            <span class="text-muted small">No crops assigned</span>
+                        {% endfor %}
+                    </td>
+                    <td><code class="small">{{ field.field_usda_guid or 'Pending...' }}</code></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#cropModal{{ field.id }}">
+                            + Add Crop
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+<script>
+    // Initialize Map
+    var map = L.map('map').setView([35.0844, -106.6504], 14); // Albuquerque Base
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Initialize Draw Control
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    var drawControl = new L.Control.Draw({
+        draw: {
+            polygon: true,
+            polyline: false,
+            rectangle: true,
+            circle: false,
+            marker: false
+        },
+        edit: {
+            featureGroup: drawnItems
+        }
+    });
+    map.addControl(drawControl);
+
+    // Capture drawn data for submission
+    map.on(L.Draw.Event.CREATED, function (event) {
+        var layer = event.layer;
+        drawnItems.addLayer(layer);
+        var data = layer.toGeoJSON();
+        document.getElementById('geojson_data').value = JSON.stringify(data);
+    });
+</script>
+{% endblock %}

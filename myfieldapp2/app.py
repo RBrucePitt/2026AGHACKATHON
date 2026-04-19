@@ -87,6 +87,33 @@ class Farm(db.Model):
     # Relationship back to profile
     profile = db.relationship('UserProfile', backref=db.backref('farms', lazy=True))
 
+class Field(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
+    
+    field_name = db.Column(db.String(100), nullable=False)
+    field_shapefile_name = db.Column(db.String(255))
+    field_usda_guid = db.Column(db.String(100))
+    internal_guid = db.Column(db.String(100), default=lambda: str(uuid.uuid4()))
+    google_kml_filename = db.Column(db.String(255))
+
+    # Relationship to access crops easily
+    crops = db.relationship('Crop', backref='field', lazy=True)
+
+class Crop(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
+    
+    crop_name = db.Column(db.String(100), nullable=False)
+    crop_usda_code = db.Column(db.String(20))
+    subtype = db.Column(db.String(100))
+    land_usage = db.Column(db.String(100))
+    estimated_yield = db.Column(db.Float)
+
 # --- 4. FORM CLASSES ---
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -219,6 +246,42 @@ def manage_farms():
 
     farms = Farm.query.filter_by(profile_id=profile.id).all() if profile else []
     return render_template('farms.html', farms=farms)
+
+@app.route("/farm/<int:farm_id>/fields", methods=['GET', 'POST'])
+def manage_fields(farm_id):
+    farm = Farm.query.get_or_404(farm_id)
+    
+    if request.method == 'POST':
+        # Logic to add a new field
+        new_field = Field(
+            farm_id=farm.id,
+            user_id=farm.user_id,
+            profile_id=farm.profile_id,
+            field_name=request.form.get('field_name'),
+            # Shapefile/KML names would be populated by your mapping logic
+        )
+        db.session.add(new_field)
+        db.session.commit()
+        flash('Field created successfully!', 'success')
+        return redirect(url_for('manage_fields', farm_id=farm.id))
+
+    fields = Field.query.filter_by(farm_id=farm_id).all()
+    return render_template('fields.html', farm=farm, fields=fields)
+
+@app.route("/add-crop/<int:field_id>", methods=['POST'])
+def add_crop(field_id):
+    field = Field.query.get_or_404(field_id)
+    new_crop = Crop(
+        field_id=field.id,
+        user_id=field.user_id,
+        profile_id=field.profile_id,
+        crop_name=request.form.get('crop_name'),
+        crop_usda_code=request.form.get('crop_code'),
+        subtype=request.form.get('subtype')
+    )
+    db.session.add(new_crop)
+    db.session.commit()
+    return redirect(url_for('manage_fields', farm_id=field.farm_id))
 
 # --- 7. RUN THE APP ---
 if __name__ == '__main__':

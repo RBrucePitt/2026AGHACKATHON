@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="main-block p-4">
+        <h2>Farm Management</h2>
+        <button class="block-button mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#addFarmForm">
+            + Add New Farm
+        </button>
+
+        <div class="collapse mb-4" id="addFarmForm">
+            <div class="card card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Farm Name</label>
+                            <input type="text" name="farm_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Gov Farm Number</label>
+                            <input type="text" name="gov_number" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label>County</label>
+                            <input type="text" name="county" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Farmland Type</label>
+                            <input type="text" name="farmland_type" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Cropland Type</label>
+                            <input type="text" name="cropland_type" class="form-control">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Farm</button>
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="accordion" id="farmAccordion">
+            {% for farm in farms %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ farm.id }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ farm.id }}">
+                        {{ farm.farm_name }} (Farm #: {{ farm.gov_farm_number }})
+                    </button>
+                </h2>
+                <div id="collapse{{ farm.id }}" class="accordion-collapse collapse" data-bs-parent="#farmAccordion">
+                    <div class="accordion-body text-start">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Operator:</strong> {{ farm.operator_name }}<br>
+                                <strong>County:</strong> {{ farm.county }}<br>
+                                <strong>System GUID:</strong> <small>{{ farm.system_guid }}</small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <strong>Last Update:</strong> {{ farm.last_update.strftime('%Y-%m-%d') }}<br>
+                                <strong>KML File:</strong> {{ farm.google_kml_name or 'None' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p>No farms registered yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

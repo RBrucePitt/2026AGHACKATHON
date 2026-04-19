@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Flask App</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; }
+        .navbar { background: #1b5e20; color: white; padding: 1rem; }
+        .container { padding: 2rem; max-width: 600px; margin: auto; background: white; }
+        .flash-success { color: green; padding: 10px; border: 1px solid green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <strong>My Application</strong> | 
+        <a href="{{ url_for('register') }}" style="color:white">Register</a> |
+        <a href="{{ url_for('login') }}" style="color:white">Login</a>
+    </div>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+    <footer class="footer">
+      <div class="footer-content">
+          <p>&copy; 2026 My Application. All rights reserved.</p>
+          <p>
+              <a href="#">Privacy Policy</a> | 
+              <a href="#">Terms of Service</a> | 
+              <a href="mailto:support@example.com">Contact Support</a>
+          </p>
+      </div>
+    </footer>
+
+    <style>
+      /* CSS to keep the footer looking clean */
+      .footer {
+          background-color: #333; /* Change this to match your header color */
+          color: white;
+          text-align: center;
+          padding: 20px 0;
+          margin-top: 50px; /* Pushes footer away from the form content */
+          width: 100%;
+      }
+      .footer-content a {
+          color: #ddd;
+          text-decoration: none;
+          margin: 0 10px;
+      }
+      .footer-content a:hover {
+          text-decoration: underline;
+      }
+    </style>
+</body>
+</html>

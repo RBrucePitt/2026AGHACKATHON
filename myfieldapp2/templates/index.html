@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greener5x5 | Agriculture Form Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --usda-green: #004851;
+            --ag-green: #1b5e20;
+            --earth-tan: #f1f1f1;
+        }
+        body { background-color: var(--earth-tan); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background-color: white; border-bottom: 4px solid var(--usda-green); }
+        .hero-section {
+            background: linear-gradient(rgba(27, 94, 32, 0.8), rgba(27, 94, 32, 0.8)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .info-card {
+            background: white;
+            border-top: 5px solid var(--ag-green);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .info-card:hover { transform: translateY(-5px); }
+        footer { background-color: var(--usda-green); color: white; padding: 20px 0; margin-top: 50px; }
+        .btn-ag { background-color: var(--ag-green); color: white; border-radius: 0; }
+        .btn-ag:hover { background-color: #0d3d15; color: white; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" style="color: var(--usda-green);">GREENER5x5</a>
+            <div class="ms-auto">
+                <a href="/login" class="btn btn-outline-dark me-2">Login</a>
+                <a href="/create-account" class="btn btn-ag">Create Account</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Simplify Your USDA Filing</h1>
+            <p class="lead">Precision tools for the modern New Mexico producer.</p>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card info-card p-4 shadow-sm">
+                    <div class="mb-3"><i class="display-5 text-success">🗺️</i></div>
+                    <h3>FSA-578 Geospatial Sync</h3>
+                    <p>Automatically map your field boundaries and sync acreage data directly to your certification forms.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card info-card p-4 shadow-sm">
+                    <div class="mb-3"><i class="display-5 text-success">📋</i></div>
+                    <h3>Automated Validation</h3>
+                    <p>Our system checks your entries against USDA requirements in real-time to prevent submission errors.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card info-card p-4 shadow-sm">
+                    <div class="mb-3"><i class="display-5 text-success">⚡</i></div>
+                    <h3>Direct Export</h3>
+                    <p>Generate compliant ESRI Shapefiles and reports ready for the Farmers.gov portal in one click.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center">
+        <div class="container">
+            <p>&copy; 2026 Greener5x5. All rights reserved.</p>
+            <button class="btn btn-sm btn-outline-light">Contact Us</button>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

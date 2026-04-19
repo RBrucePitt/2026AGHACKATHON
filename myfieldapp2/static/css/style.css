@@ -1,0 +1,129 @@
+/* Greener5x5 Agricultural Reporting Style Sheet
+   Colors: USDA Teal (#004851), Agri Green (#1b5e20)
+*/
+
+:root {
+    --usda-teal: #004851;
+    --usda-teal-light: #006673;
+    --agri-green: #1b5e20;
+    --agri-green-hover: #2e7d32;
+    --neutral-light: #f8f9fa;
+    --text-dark: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* Navbar Customization */
+.navbar {
+    background-color: var(--usda-teal) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0, 72, 81, 0.7), rgba(27, 94, 32, 0.7)), 
+                url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    padding: 120px 0;
+    margin-bottom: 50px;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .lead {
+    font-size: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Button Customization */
+.btn-agri {
+    background-color: var(--agri-green);
+    border-color: var(--agri-green);
+    color: white;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-agri:hover {
+    background-color: var(--agri-green-hover);
+    border-color: var(--agri-green-hover);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-light:hover {
+    color: var(--usda-teal);
+}
+
+/* Information Sections / Cards */
+.info-section h3 {
+    color: var(--usda-teal);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.info-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-color: var(--agri-green);
+}
+
+.info-icon {
+    font-size: 2.5rem;
+    color: var(--agri-green);
+    margin-bottom: 20px;
+}
+
+/* Form Styles (Prepped for Login/Create Account) */
+.form-container {
+    background-color: var(--neutral-light);
+    padding: 40px;
+    border-radius: 8px;
+    border-top: 5px solid var(--usda-teal);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Footer */
+footer {
+    background-color: #f1f3f5;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 80px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    .hero-section {
+        padding: 80px 0;
+    }
+}

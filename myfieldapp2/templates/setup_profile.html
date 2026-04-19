@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="main-block">
+        <h2>Business & Mailing Profile</h2>
+        <p>Please provide your contact and company details for USDA submittals.</p>
+        <hr>
+        
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company_name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label>Mailing Address Line 1</label>
+                <input type="text" name="address_line1" placeholder="Street address or P.O. Box" required>
+            </div>
+
+            <div class="form-group">
+                <label>Address Line 2 (Optional)</label>
+                <input type="text" name="address_line2" placeholder="Apartment, suite, unit, etc.">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" name="state" placeholder="NM" required>
+                </div>
+                <div class="form-group">
+                    <label>Zip Code</label>
+                    <input type="text" name="zip_code" required>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button type="submit" class="block-button">Save Profile Information</button>
+                <a href="{{ url_for('home') }}" style="margin-left:15px; text-decoration:none; color:#666;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 20px auto;
+    }
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensures padding doesn't break width */
+    }
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+    .form-row .form-group {
+        flex: 1;
+    }
+    .main-block {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
